@@ -1,7 +1,7 @@
 {
   "name": "rrots-studio-bot",
-  "version": "1.2.0",
-  "description": "RROTS Studio Discord bot - rn! prefix commands",
+  "version": "1.3.0",
+  "description": "RROTS Studio Discord bot - stable rn! prefix command system",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"

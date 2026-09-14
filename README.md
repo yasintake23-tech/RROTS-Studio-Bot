@@ -21,3 +21,10 @@ Bot slash `/` komutları yerine `rn!` prefixini kullanır.
 Railway Variables bölümünde yalnızca `DISCORD_TOKEN` gereklidir.
 
 Discord Developer Portal'da **Message Content Intent** açık olmalıdır.
+
+
+## Prefix
+Komutlar `rn!` ile çalışır. Örn: `rn!ping`, `rn!help`.
+
+## Railway
+`DISCORD_TOKEN` değişkeni zorunludur. Discord Developer Portal > Bot altında Message Content Intent açık olmalıdır.
