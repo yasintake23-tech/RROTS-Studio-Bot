@@ -9,7 +9,7 @@ module.exports = {
     .setDescription('Bir üyeyi sunucudan yasaklar.')
     .addUserOption((option) =>
       option
-        .setName('kullanıcı')
+        .setName('kullanici')
         .setDescription('Yasaklanacak üye.')
         .setRequired(true)
     )
@@ -30,7 +30,7 @@ module.exports = {
       });
     }
 
-    const user = interaction.options.getUser('kullanıcı', true);
+    const user = interaction.options.getUser('kullanici', true);
     const reason = interaction.options.getString('sebep') ?? 'Sebep belirtilmedi.';
 
     if (user.id === interaction.user.id) {

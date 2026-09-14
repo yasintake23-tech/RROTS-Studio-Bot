@@ -6,14 +6,13 @@ const {
   GatewayIntentBits,
   Events,
 } = require('discord.js');
-
 const fs = require('node:fs');
 const path = require('node:path');
 
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
-  console.error('DISCORD_TOKEN bulunamadı. .env dosyanı kontrol et.');
+  console.error('❌ DISCORD_TOKEN bulunamadı. Railway Variables bölümüne bot tokenini ekle.');
   process.exit(1);
 }
 
@@ -37,7 +36,7 @@ for (const file of commandFiles) {
   const command = require(filePath);
 
   if (!command.data || !command.execute) {
-    console.warn(`${file} geçerli bir komut değil.`);
+    console.warn(`⚠️ ${file} geçerli bir komut değil, atlandı.`);
     continue;
   }
 
@@ -47,13 +46,13 @@ for (const file of commandFiles) {
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ ${readyClient.user.tag} olarak giriş yapıldı.`);
   console.log(`📡 ${readyClient.guilds.cache.size} sunucuda aktif.`);
+  console.log(`🧩 ${client.commands.size} komut hazır.`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
-
   if (!command) return;
 
   try {
@@ -75,11 +74,22 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 process.on('unhandledRejection', (error) => {
-  console.error('Yakalanmamış Promise hatası:', error);
+  console.error('❌ Yakalanmamış Promise hatası:', error);
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('Yakalanmamış hata:', error);
+  console.error('❌ Yakalanmamış hata:', error);
 });
 
-client.login(token);
+for (const signal of ['SIGINT', 'SIGTERM']) {
+  process.on(signal, async () => {
+    console.log(`🛑 ${signal} alındı, bot kapatılıyor...`);
+    client.destroy();
+    process.exit(0);
+  });
+}
+
+client.login(token).catch((error) => {
+  console.error('❌ Discord giriş hatası:', error.message);
+  process.exit(1);
+});

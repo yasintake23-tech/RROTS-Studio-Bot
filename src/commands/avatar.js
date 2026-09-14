@@ -8,13 +8,13 @@ module.exports = {
     .setDescription('Bir kullanıcının avatarını gösterir.')
     .addUserOption((option) =>
       option
-        .setName('kullanıcı')
+        .setName('kullanici')
         .setDescription('Avatarını görmek istediğin kullanıcı.')
         .setRequired(false)
     ),
 
   async execute(interaction) {
-    const user = interaction.options.getUser('kullanıcı') ?? interaction.user;
+    const user = interaction.options.getUser('kullanici') ?? interaction.user;
     const avatar = user.displayAvatarURL({ size: 4096, extension: 'png', forceStatic: false });
 
     await interaction.reply({

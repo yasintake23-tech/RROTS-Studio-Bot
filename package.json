@@ -1,10 +1,10 @@
 {
   "name": "rrots-studio-bot",
-  "version": "1.0.0",
-  "description": "RROTS Studio Discord bot - temel V1 sürümü",
+  "version": "1.0.1",
+  "description": "RROTS Studio Discord bot - Railway uyumlu V1.1",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/start.js",
     "deploy": "node src/deploy-commands.js"
   },
   "engines": {

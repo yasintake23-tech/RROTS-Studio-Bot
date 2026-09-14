@@ -9,7 +9,7 @@ module.exports = {
     .setDescription('Bir üyeyi sunucudan atar.')
     .addUserOption((option) =>
       option
-        .setName('kullanıcı')
+        .setName('kullanici')
         .setDescription('Atılacak üye.')
         .setRequired(true)
     )
@@ -30,7 +30,7 @@ module.exports = {
       });
     }
 
-    const user = interaction.options.getUser('kullanıcı', true);
+    const user = interaction.options.getUser('kullanici', true);
     const reason = interaction.options.getString('sebep') ?? 'Sebep belirtilmedi.';
 
     if (user.id === interaction.user.id) {

@@ -36,6 +36,13 @@ RROTS Studio için hazırlanmış temel Discord botu (V1).
 7. Botu çalıştır:
    `npm start`
 
+## Railway
+
+GitHub → Railway bağlantısında Service > Variables bölümüne `DISCORD_TOKEN`, `CLIENT_ID` ve `GUILD_ID` ekle.
+`npm start` artık önce slash komutlarını otomatik günceller, ardından botu başlatır. Böylece GitHub'a her push sonrası yeni komutlar da otomatik uygulanır.
+
+Railway'e `.env` yüklenmez; değişkenleri Railway Variables bölümüne eklemek gerekir.
+
 ## Token güvenliği
 
 `.env` dosyasını kimseyle paylaşma ve GitHub'a yükleme.

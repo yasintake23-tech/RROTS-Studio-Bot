@@ -11,10 +11,9 @@ module.exports = {
   async execute(interaction) {
     const guild = interaction.guild;
     const owner = await guild.fetchOwner();
-
     const embed = new EmbedBuilder()
       .setTitle(`📊 ${guild.name}`)
-      .setThumbnail(guild.iconURL({ size: 256 }))
+      .setThumbnail(guild.iconURL({ size: 256 }) || 'https://cdn.discordapp.com/embed/avatars/0.png')
       .addFields(
         { name: '👑 Sahip', value: owner.user.tag, inline: true },
         { name: '👥 Üye', value: `${guild.memberCount}`, inline: true },

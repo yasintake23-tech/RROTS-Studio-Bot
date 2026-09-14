@@ -19,13 +19,13 @@ module.exports = {
     .setDescription('Bir üyeye zaman aşımı uygular.')
     .addUserOption((option) =>
       option
-        .setName('kullanıcı')
+        .setName('kullanici')
         .setDescription('Zaman aşımı uygulanacak üye.')
         .setRequired(true)
     )
     .addStringOption((option) =>
       option
-        .setName('süre')
+        .setName('sure')
         .setDescription('Süre: 1m, 5m, 10m, 30m, 1h, 1d veya 7d')
         .setRequired(true)
         .addChoices(
@@ -55,8 +55,8 @@ module.exports = {
       });
     }
 
-    const user = interaction.options.getUser('kullanıcı', true);
-    const durationKey = interaction.options.getString('süre', true);
+    const user = interaction.options.getUser('kullanici', true);
+    const durationKey = interaction.options.getString('sure', true);
     const reason = interaction.options.getString('sebep') ?? 'Sebep belirtilmedi.';
 
     if (user.id === interaction.user.id) {

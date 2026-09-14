@@ -9,13 +9,13 @@ module.exports = {
     .setDescription('Bir kullanıcı hakkında bilgi verir.')
     .addUserOption((option) =>
       option
-        .setName('kullanıcı')
+        .setName('kullanici')
         .setDescription('Bilgilerini görmek istediğin kullanıcı.')
         .setRequired(false)
     ),
 
   async execute(interaction) {
-    const user = interaction.options.getUser('kullanıcı') ?? interaction.user;
+    const user = interaction.options.getUser('kullanici') ?? interaction.user;
     const member = interaction.guild?.members.cache.get(user.id);
 
     const embed = new EmbedBuilder()
