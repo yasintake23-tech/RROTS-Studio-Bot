@@ -1,11 +1,10 @@
 {
   "name": "rrots-studio-bot",
-  "version": "1.0.1",
-  "description": "RROTS Studio Discord bot - Railway uyumlu V1.1",
+  "version": "1.2.0",
+  "description": "RROTS Studio Discord bot - rn! prefix commands",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/start.js",
-    "deploy": "node src/deploy-commands.js"
+    "start": "node src/index.js"
   },
   "engines": {
     "node": ">=20.0.0"

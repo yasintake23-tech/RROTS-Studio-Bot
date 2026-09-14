@@ -1,19 +1,15 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('serverinfo')
-    .setDescription('Bulunduğun sunucu hakkında bilgi verir.'),
-
-  async execute(interaction) {
-    const guild = interaction.guild;
+  name: 'serverinfo',
+  description: 'Bulunduğun sunucu hakkında bilgi verir.',
+  async execute(message) {
+    const guild = message.guild;
     const owner = await guild.fetchOwner();
+
     const embed = new EmbedBuilder()
       .setTitle(`📊 ${guild.name}`)
-      .setThumbnail(guild.iconURL({ size: 256 }) || 'https://cdn.discordapp.com/embed/avatars/0.png')
+      .setThumbnail(guild.iconURL({ size: 256 }) || null)
       .addFields(
         { name: '👑 Sahip', value: owner.user.tag, inline: true },
         { name: '👥 Üye', value: `${guild.memberCount}`, inline: true },
@@ -25,6 +21,6 @@ module.exports = {
       .setFooter({ text: 'RROTS Studio • Server Info' })
       .setTimestamp();
 
-    await interaction.reply({ embeds: [embed] });
+    await message.reply({ embeds: [embed] });
   },
 };

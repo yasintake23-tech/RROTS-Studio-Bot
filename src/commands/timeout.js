@@ -1,7 +1,4 @@
-const {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-} = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 
 const DURATIONS = {
   '1m': 60_000,
@@ -14,78 +11,29 @@ const DURATIONS = {
 };
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('timeout')
-    .setDescription('Bir üyeye zaman aşımı uygular.')
-    .addUserOption((option) =>
-      option
-        .setName('kullanici')
-        .setDescription('Zaman aşımı uygulanacak üye.')
-        .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName('sure')
-        .setDescription('Süre: 1m, 5m, 10m, 30m, 1h, 1d veya 7d')
-        .setRequired(true)
-        .addChoices(
-          { name: '1 dakika', value: '1m' },
-          { name: '5 dakika', value: '5m' },
-          { name: '10 dakika', value: '10m' },
-          { name: '30 dakika', value: '30m' },
-          { name: '1 saat', value: '1h' },
-          { name: '1 gün', value: '1d' },
-          { name: '7 gün', value: '7d' },
-        )
-    )
-    .addStringOption((option) =>
-      option
-        .setName('sebep')
-        .setDescription('Zaman aşımı sebebi.')
-        .setRequired(false)
-        .setMaxLength(512)
-    )
-    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers),
-
-  async execute(interaction) {
-    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ModerateMembers)) {
-      return interaction.reply({
-        content: '❌ Bu komut için **Üyeleri Denetle** yetkisi gerekiyor.',
-        ephemeral: true,
-      });
+  name: 'timeout',
+  description: 'Bir üyeye zaman aşımı uygular.',
+  async execute(message, args) {
+    if (!message.member.permissions.has(PermissionFlagsBits.ModerateMembers)) {
+      return message.reply('❌ Bu komut için **Üyeleri Denetle** yetkisi gerekiyor.');
     }
 
-    const user = interaction.options.getUser('kullanici', true);
-    const durationKey = interaction.options.getString('sure', true);
-    const reason = interaction.options.getString('sebep') ?? 'Sebep belirtilmedi.';
+    const user = message.mentions.users.first();
+    const durationKey = args.find((arg) => Object.hasOwn(DURATIONS, arg.toLowerCase()))?.toLowerCase();
 
-    if (user.id === interaction.user.id) {
-      return interaction.reply({
-        content: '❌ Kendine timeout veremezsin.',
-        ephemeral: true,
-      });
+    if (!user || !durationKey) {
+      return message.reply('❌ Kullanım: `rn!timeout @üye <1m|5m|10m|30m|1h|1d|7d> [sebep]`');
     }
 
-    const member = await interaction.guild.members.fetch(user.id).catch(() => null);
+    if (user.id === message.author.id) return message.reply('❌ Kendine timeout veremezsin.');
 
-    if (!member) {
-      return interaction.reply({
-        content: '❌ Bu kullanıcı sunucuda bulunamadı.',
-        ephemeral: true,
-      });
-    }
+    const member = await message.guild.members.fetch(user.id).catch(() => null);
+    if (!member) return message.reply('❌ Bu kullanıcı sunucuda bulunamadı.');
+    if (!member.moderatable) return message.reply('❌ Bu üyeye timeout uygulayamıyorum. Botun rol sırasını ve yetkilerini kontrol et.');
 
-    if (!member.moderatable) {
-      return interaction.reply({
-        content: '❌ Bu üyeye timeout uygulayamıyorum. Botun rol sırasını ve yetkilerini kontrol et.',
-        ephemeral: true,
-      });
-    }
-
+    const durationIndex = args.findIndex((arg) => arg.toLowerCase() === durationKey);
+    const reason = args.slice(durationIndex + 1).join(' ') || 'Sebep belirtilmedi.';
     await member.timeout(DURATIONS[durationKey], reason);
-
-    await interaction.reply(
-      `⏱️ **${user.tag}** için **${durationKey}** zaman aşımı uygulandı.\n> Sebep: ${reason}`
-    );
+    await message.reply(`⏱️ **${user.tag}** için **${durationKey}** zaman aşımı uygulandı.\n> Sebep: ${reason}`);
   },
 };

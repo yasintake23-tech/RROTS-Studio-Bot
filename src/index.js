@@ -9,6 +9,7 @@ const {
 const fs = require('node:fs');
 const path = require('node:path');
 
+const PREFIX = 'rn!';
 const token = process.env.DISCORD_TOKEN;
 
 if (!token) {
@@ -32,57 +33,50 @@ const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
-  const command = require(filePath);
-
-  if (!command.data || !command.execute) {
-    console.warn(`⚠️ ${file} geçerli bir komut değil, atlandı.`);
+  const command = require(path.join(commandsPath, file));
+  if (!command.name || typeof command.execute !== 'function') {
+    console.warn(`⚠️ ${file} geçerli bir prefix komutu değil, atlandı.`);
     continue;
   }
-
-  client.commands.set(command.data.name, command);
+  client.commands.set(command.name, command);
 }
 
 client.once(Events.ClientReady, (readyClient) => {
   console.log(`✅ ${readyClient.user.tag} olarak giriş yapıldı.`);
   console.log(`📡 ${readyClient.guilds.cache.size} sunucuda aktif.`);
-  console.log(`🧩 ${client.commands.size} komut hazır.`);
+  console.log(`🧩 ${client.commands.size} prefix komutu hazır.`);
+  console.log(`⌨️ Prefix: ${PREFIX}`);
 });
 
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot || !message.guild) return;
 
-  const command = client.commands.get(interaction.commandName);
+  const content = message.content.trim();
+  if (!content.toLowerCase().startsWith(PREFIX)) return;
+
+  const withoutPrefix = content.slice(PREFIX.length).trim();
+  if (!withoutPrefix) return;
+
+  const parts = withoutPrefix.split(/\s+/);
+  const commandName = parts.shift().toLowerCase();
+  const args = parts;
+  const command = client.commands.get(commandName);
+
   if (!command) return;
 
   try {
-    await command.execute(interaction);
+    await command.execute(message, args);
   } catch (error) {
-    console.error(`/${interaction.commandName} komutunda hata:`, error);
-
-    const payload = {
-      content: '❌ Komut çalıştırılırken bir hata oluştu.',
-      ephemeral: true,
-    };
-
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp(payload).catch(() => {});
-    } else {
-      await interaction.reply(payload).catch(() => {});
-    }
+    console.error(`${PREFIX}${commandName} komutunda hata:`, error);
+    await message.reply('❌ Komut çalıştırılırken bir hata oluştu.').catch(() => {});
   }
 });
 
-process.on('unhandledRejection', (error) => {
-  console.error('❌ Yakalanmamış Promise hatası:', error);
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('❌ Yakalanmamış hata:', error);
-});
+process.on('unhandledRejection', (error) => console.error('❌ Yakalanmamış Promise hatası:', error));
+process.on('uncaughtException', (error) => console.error('❌ Yakalanmamış hata:', error));
 
 for (const signal of ['SIGINT', 'SIGTERM']) {
-  process.on(signal, async () => {
+  process.on(signal, () => {
     console.log(`🛑 ${signal} alındı, bot kapatılıyor...`);
     client.destroy();
     process.exit(0);

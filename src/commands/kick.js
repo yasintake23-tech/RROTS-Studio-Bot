@@ -1,65 +1,23 @@
-const {
-  SlashCommandBuilder,
-  PermissionFlagsBits,
-} = require('discord.js');
+const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('kick')
-    .setDescription('Bir üyeyi sunucudan atar.')
-    .addUserOption((option) =>
-      option
-        .setName('kullanici')
-        .setDescription('Atılacak üye.')
-        .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName('sebep')
-        .setDescription('Atma sebebi.')
-        .setRequired(false)
-        .setMaxLength(512)
-    )
-    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers),
-
-  async execute(interaction) {
-    if (!interaction.memberPermissions?.has(PermissionFlagsBits.KickMembers)) {
-      return interaction.reply({
-        content: '❌ Bu komut için **Üyeleri At** yetkisi gerekiyor.',
-        ephemeral: true,
-      });
+  name: 'kick',
+  description: 'Bir üyeyi sunucudan atar.',
+  async execute(message, args) {
+    if (!message.member.permissions.has(PermissionFlagsBits.KickMembers)) {
+      return message.reply('❌ Bu komut için **Üyeleri At** yetkisi gerekiyor.');
     }
 
-    const user = interaction.options.getUser('kullanici', true);
-    const reason = interaction.options.getString('sebep') ?? 'Sebep belirtilmedi.';
+    const user = message.mentions.users.first();
+    if (!user) return message.reply('❌ Kullanım: `rn!kick @üye [sebep]`');
+    if (user.id === message.author.id) return message.reply('❌ Kendini atamazsın.');
 
-    if (user.id === interaction.user.id) {
-      return interaction.reply({
-        content: '❌ Kendini atamazsın.',
-        ephemeral: true,
-      });
-    }
+    const member = await message.guild.members.fetch(user.id).catch(() => null);
+    if (!member) return message.reply('❌ Bu kullanıcı sunucuda bulunamadı.');
+    if (!member.kickable) return message.reply('❌ Bu üyeyi atamıyorum. Botun rol sırasını ve yetkilerini kontrol et.');
 
-    const member = await interaction.guild.members.fetch(user.id).catch(() => null);
-
-    if (!member) {
-      return interaction.reply({
-        content: '❌ Bu kullanıcı sunucuda bulunamadı.',
-        ephemeral: true,
-      });
-    }
-
-    if (!member.kickable) {
-      return interaction.reply({
-        content: '❌ Bu üyeyi atamıyorum. Botun rol sırasını ve yetkilerini kontrol et.',
-        ephemeral: true,
-      });
-    }
-
+    const reason = args.slice(1).join(' ') || 'Sebep belirtilmedi.';
     await member.kick(reason);
-
-    await interaction.reply(
-      `👢 **${user.tag}** sunucudan atıldı.\n> Sebep: ${reason}`
-    );
+    await message.reply(`👢 **${user.tag}** sunucudan atıldı.\n> Sebep: ${reason}`);
   },
 };

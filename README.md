@@ -1,48 +1,23 @@
 # RROTS Studio Bot
 
-RROTS Studio için hazırlanmış temel Discord botu (V1).
+RROTS Studio için Discord botu.
 
-## V1 komutları
+## Komut sistemi
 
-- `/ping` — Bot gecikmesini gösterir.
-- `/help` — Komut listesini gösterir.
-- `/serverinfo` — Sunucu bilgilerini gösterir.
-- `/userinfo [kullanıcı]` — Kullanıcı bilgilerini gösterir.
-- `/avatar [kullanıcı]` — Avatarı gösterir.
-- `/clear <miktar>` — Mesajları siler.
-- `/kick <kullanıcı> [sebep]` — Üyeyi sunucudan atar.
-- `/ban <kullanıcı> [sebep]` — Üyeyi yasaklar.
-- `/timeout <kullanıcı> <süre> [sebep]` — Üyeye zaman aşımı verir.
+Bot slash `/` komutları yerine `rn!` prefixini kullanır.
 
-## Gereksinimler
-
-- Node.js 20+
-- Discord bot token
-- Botun sunucuda olması
-- `applications.commands` ve `bot` kapsamlarının açık olması
-
-## Kurulum
-
-1. Bu klasörü bilgisayara çıkar.
-2. Terminali bu klasörde aç.
-3. `npm install` çalıştır.
-4. `.env.example` dosyasını `.env` olarak kopyala.
-5. `.env` içindeki değerleri doldur:
-   - `DISCORD_TOKEN`: Developer Portal > Bot bölümündeki token
-   - `CLIENT_ID`: Developer Portal > General Information > Application ID
-   - `GUILD_ID`: RROTS Studio sunucu ID'si
-6. Komutları sunucuya kaydet:
-   `npm run deploy`
-7. Botu çalıştır:
-   `npm start`
+- `rn!ping`
+- `rn!help`
+- `rn!serverinfo`
+- `rn!userinfo [@üye]`
+- `rn!avatar [@üye]`
+- `rn!clear <1-100>`
+- `rn!kick @üye [sebep]`
+- `rn!ban @üye [sebep]`
+- `rn!timeout @üye <1m|5m|10m|30m|1h|1d|7d> [sebep]`
 
 ## Railway
 
-GitHub → Railway bağlantısında Service > Variables bölümüne `DISCORD_TOKEN`, `CLIENT_ID` ve `GUILD_ID` ekle.
-`npm start` artık önce slash komutlarını otomatik günceller, ardından botu başlatır. Böylece GitHub'a her push sonrası yeni komutlar da otomatik uygulanır.
+Railway Variables bölümünde yalnızca `DISCORD_TOKEN` gereklidir.
 
-Railway'e `.env` yüklenmez; değişkenleri Railway Variables bölümüne eklemek gerekir.
-
-## Token güvenliği
-
-`.env` dosyasını kimseyle paylaşma ve GitHub'a yükleme.
+Discord Developer Portal'da **Message Content Intent** açık olmalıdır.

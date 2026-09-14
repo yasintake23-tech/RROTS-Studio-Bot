@@ -1,24 +1,9 @@
-const {
-  SlashCommandBuilder,
-} = require('discord.js');
-
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('avatar')
-    .setDescription('Bir kullanıcının avatarını gösterir.')
-    .addUserOption((option) =>
-      option
-        .setName('kullanici')
-        .setDescription('Avatarını görmek istediğin kullanıcı.')
-        .setRequired(false)
-    ),
-
-  async execute(interaction) {
-    const user = interaction.options.getUser('kullanici') ?? interaction.user;
+  name: 'avatar',
+  description: 'Bir kullanıcının avatarını gösterir.',
+  async execute(message) {
+    const user = message.mentions.users.first() || message.author;
     const avatar = user.displayAvatarURL({ size: 4096, extension: 'png', forceStatic: false });
-
-    await interaction.reply({
-      content: `🖼️ **${user.tag}**\n${avatar}`,
-    });
+    await message.reply(`🖼️ **${user.tag}**\n${avatar}`);
   },
 };

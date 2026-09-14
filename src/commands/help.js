@@ -1,38 +1,33 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('Botun komutlarını gösterir.'),
-
-  async execute(interaction) {
+  name: 'help',
+  description: 'Botun komutlarını gösterir.',
+  async execute(message) {
     const embed = new EmbedBuilder()
       .setTitle('🤖 RROTS Studio Bot')
-      .setDescription('Temel komutlar ve kullanım alanları:')
+      .setDescription('Komutları **rn!** prefixi ile kullanabilirsin.')
       .addFields(
         {
           name: '🔧 Genel',
           value:
-            '`/ping` — Gecikmeyi gösterir.\n' +
-            '`/serverinfo` — Sunucu bilgilerini gösterir.\n' +
-            '`/userinfo` — Kullanıcı bilgilerini gösterir.\n' +
-            '`/avatar` — Avatarı gösterir.',
+            '`rn!ping` — Gecikmeyi gösterir.\n' +
+            '`rn!serverinfo` — Sunucu bilgilerini gösterir.\n' +
+            '`rn!userinfo [@üye]` — Kullanıcı bilgilerini gösterir.\n' +
+            '`rn!avatar [@üye]` — Avatarı gösterir.',
         },
         {
           name: '🛡️ Moderasyon',
           value:
-            '`/clear` — Mesajları siler.\n' +
-            '`/kick` — Üyeyi atar.\n' +
-            '`/ban` — Üyeyi yasaklar.\n' +
-            '`/timeout` — Zaman aşımı verir.',
+            '`rn!clear <1-100>` — Mesajları siler.\n' +
+            '`rn!kick @üye [sebep]` — Üyeyi atar.\n' +
+            '`rn!ban @üye [sebep]` — Üyeyi yasaklar.\n' +
+            '`rn!timeout @üye <1m|5m|10m|30m|1h|1d|7d> [sebep]` — Timeout verir.',
         },
       )
-      .setFooter({ text: 'RROTS Studio • V1' })
+      .setFooter({ text: 'RROTS Studio • V1.2' })
       .setTimestamp();
 
-    await interaction.reply({ embeds: [embed] });
+    await message.reply({ embeds: [embed] });
   },
 };
